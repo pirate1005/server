@@ -72,7 +72,7 @@
                 <i class="ph-bold ph-caret-down text-gray-500 transition-transform group-open:rotate-180"></i>
             </summary>
             <div class="p-4 text-sm text-gray-400 border-t border-gray-700 leading-relaxed">
-                Anda otomatis menjadi Owner VIP jika menyewa <strong>Server Khusus Owner</strong> atau memiliki total aset investasi minimal Rp 5.000.000.
+                Anda otomatis menjadi Owner VIP jika menyewa <strong>Server Khusus Owner</strong> atau memiliki total aset sewa minimal Rp 5.000.000.
             </div>
         </details>
 

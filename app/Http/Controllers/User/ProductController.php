@@ -17,8 +17,11 @@ class ProductController extends Controller
     // ETALASE PRODUK
     public function index()
     {
-        // Ambil semua produk aktif
-        $products = Product::where('is_active', true)->get();
+        // Ambil semua produk aktif, lalu URUTKAN dari harga termurah
+        $products = Product::where('is_active', true)
+                           ->orderBy('price', 'asc') // Tambahkan baris ini
+                           ->get();
+                           
         return view('user.products.index', compact('products'));
     }
 
@@ -78,6 +81,6 @@ class ProductController extends Controller
             }
         });
 
-        return redirect()->route('user.servers')->with('success', 'Server berhasil disewa! Kontrak investasi dimulai.');
+        return redirect()->route('user.servers')->with('success', 'Server berhasil disewa! Kontrak server dimulai.');
     }
 }

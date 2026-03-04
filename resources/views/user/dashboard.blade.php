@@ -29,33 +29,34 @@
     </div>
 
     @if($banners->count() > 0)
-    <div class="relative w-full mb-6 rounded-3xl overflow-hidden shadow-lg shadow-black/50 border border-gray-800 aspect-[21/9] md:aspect-[4/1]">
+    <div class="relative w-full mb-6 rounded-3xl overflow-hidden shadow-[0_15px_40px_-10px_rgba(0,0,0,0.8)] border border-gray-700 h-60 md:h-72">
         
-        <div id="banner-slideshow" class="w-full h-full relative">
+        <div id="banner-slideshow" class="w-full h-full relative bg-gray-900">
             @foreach($banners as $index => $banner)
                 <a href="{{ $banner->target_url ?? '#' }}" {{ $banner->target_url ? 'target="_blank"' : 'onclick="event.preventDefault()"' }} 
                    class="absolute inset-0 transition-opacity duration-1000 ease-in-out {{ $index == 0 ? 'opacity-100 z-10' : 'opacity-0 z-0' }} banner-slide">
                     
                     <img src="{{ asset($banner->image_path) }}" class="w-full h-full object-cover" alt="Promo {{ $index }}">
                     
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                 </a>
             @endforeach
         </div>
 
-        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[9px] text-gray-300 border border-white/10 uppercase tracking-widest z-20">
+        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded text-[10px] text-gray-300 border border-white/20 uppercase tracking-widest z-20 font-bold shadow-lg">
             Info / Promo
         </div>
 
         @if($banners->count() > 1)
-        <div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-20">
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
             @foreach($banners as $index => $banner)
-                <div class="w-1.5 h-1.5 rounded-full transition-all duration-300 banner-dot {{ $index == 0 ? 'bg-cyan-400 w-3' : 'bg-white/40' }}"></div>
+                <div class="w-2 h-2 rounded-full transition-all duration-300 banner-dot shadow-md {{ $index == 0 ? 'bg-cyan-400 w-5' : 'bg-white/50' }}"></div>
             @endforeach
         </div>
         @endif
     </div>
     @endif
+
     <div class="relative w-full h-48 bg-gradient-to-br from-cyan-600 to-blue-800 rounded-3xl p-6 shadow-2xl shadow-cyan-900/20 overflow-hidden mb-6 group">
         <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-white/20 transition duration-500"></div>
         <div class="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-xl -ml-10 -mb-10"></div>
@@ -76,10 +77,10 @@
             </div>
 
             <div class="flex gap-3 mt-4">
-                <a href="{{ route('user.wallet') }}" class="flex-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm py-2.5 rounded-xl flex items-center justify-center gap-2 text-white text-sm font-bold transition shadow-lg">
+                <a href="{{ route('user.wallet') }}" onclick="switchTab('deposit')" class="flex-1 bg-white/20 hover:bg-white/30 backdrop-blur-sm py-2.5 rounded-xl flex items-center justify-center gap-2 text-white text-sm font-bold transition shadow-lg">
                     <i class="ph-fill ph-arrow-down"></i> Deposit
                 </a>
-                <a href="{{ route('user.wallet') }}" class="flex-1 bg-black/20 hover:bg-black/30 backdrop-blur-sm py-2.5 rounded-xl flex items-center justify-center gap-2 text-white text-sm font-bold transition shadow-lg">
+                <a href="{{ route('user.wallet') }}" onclick="switchTab('withdraw')" class="flex-1 bg-black/20 hover:bg-black/30 backdrop-blur-sm py-2.5 rounded-xl flex items-center justify-center gap-2 text-white text-sm font-bold transition shadow-lg">
                     <i class="ph-fill ph-arrow-up"></i> Withdraw
                 </a>
             </div>
@@ -87,13 +88,15 @@
     </div>
 
     <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="bg-[#141625] p-4 rounded-2xl border border-gray-800 flex flex-col items-center text-center hover:border-gray-600 transition">
-            <div class="w-10 h-10 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center mb-2">
+        
+        <a href="{{ route('user.servers') }}" class="group bg-[#141625] p-4 rounded-2xl border border-gray-800 flex flex-col items-center text-center hover:border-purple-500/50 hover:bg-purple-500/5 transition cursor-pointer">
+            <div class="w-10 h-10 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
                 <i class="ph-fill ph-hard-drives text-xl"></i>
             </div>
             <p class="text-gray-400 text-xs">Server Aktif</p>
             <p class="text-white font-bold text-lg">{{ $activeServers }} Unit</p>
-        </div>
+        </a>
+
         <div class="bg-[#141625] p-4 rounded-2xl border border-gray-800 flex flex-col items-center text-center hover:border-gray-600 transition">
             <div class="w-10 h-10 rounded-full bg-green-500/10 text-green-400 flex items-center justify-center mb-2">
                 <i class="ph-fill ph-money text-xl"></i>
@@ -101,6 +104,7 @@
             <p class="text-gray-400 text-xs">Total Profit</p>
             <p class="text-white font-bold text-lg">Rp {{ number_format($totalProfit, 0, ',', '.') }}</p>
         </div>
+        
     </div>
 
     <h3 class="text-white font-bold mb-4 flex items-center gap-2">
@@ -170,21 +174,21 @@
         @endforelse
     </div>
 
-    <div id="live-toast" class="fixed top-24 right-4 z-50 transform translate-x-full transition-transform duration-500 ease-in-out pointer-events-none">
-        <div class="bg-[#1f2937]/95 backdrop-blur-xl border-l-4 border-green-500 text-white px-4 py-3 rounded-r-xl shadow-2xl flex items-center gap-3 max-w-xs ring-1 ring-white/10">
-            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden relative">
+    <div id="live-toast" class="fixed top-4 right-4 z-50 transform translate-x-full transition-transform duration-500 ease-in-out pointer-events-none">
+        <div class="bg-[#1f2937]/95 backdrop-blur-xl border-l-4 border-green-500 text-white px-3 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 max-w-[240px] ring-1 ring-white/10">
+            <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden relative">
                 <img id="toast-img" src="" class="w-full h-full object-cover hidden">
-                <div id="toast-initial" class="w-full h-full flex items-center justify-center font-bold text-gray-300 bg-gradient-to-br from-gray-700 to-gray-900">A</div>
-                <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border border-gray-800"></div>
+                <div id="toast-initial" class="w-full h-full flex items-center justify-center font-bold text-gray-300 bg-gradient-to-br from-gray-700 to-gray-900 text-xs">A</div>
+                <div class="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-gray-800"></div>
             </div>
-            <div>
-                <p class="text-[10px] text-gray-400 uppercase tracking-wider mb-0.5" id="toast-name">Seseorang</p>
-                <p class="text-sm font-bold leading-tight flex flex-col">
+            <div class="flex-1">
+                <p class="text-[9px] text-gray-400 uppercase tracking-wider mb-0.5" id="toast-name">Seseorang</p>
+                <p class="text-xs font-bold leading-tight flex flex-col gap-0.5">
                     <span id="toast-action" class="text-green-400">Deposit</span> 
                     <span id="toast-amount" class="text-white">Rp 100.000</span>
                 </p>
             </div>
-            <div class="absolute top-2 right-2 text-[9px] text-gray-500" id="toast-time">1d lalu</div>
+            <div class="absolute top-1.5 right-2 text-[8px] text-gray-500" id="toast-time">1d lalu</div>
         </div>
     </div>
 
@@ -199,32 +203,27 @@
             const dots = document.querySelectorAll('.banner-dot');
             let currentSlide = 0;
             const slideCount = slides.length;
-            const interval = 4000; // Ganti gambar tiap 4 detik
+            const interval = 4000; 
 
             function nextSlide() {
-                // Sembunyikan slide aktif
                 slides[currentSlide].classList.remove('opacity-100', 'z-10');
                 slides[currentSlide].classList.add('opacity-0', 'z-0');
-                dots[currentSlide].classList.remove('bg-cyan-400', 'w-3');
-                dots[currentSlide].classList.add('bg-white/40', 'w-1.5');
+                dots[currentSlide].classList.remove('bg-cyan-400', 'w-5'); 
+                dots[currentSlide].classList.add('bg-white/50', 'w-2');
 
-                // Pindah ke slide berikutnya
                 currentSlide = (currentSlide + 1) % slideCount;
 
-                // Tampilkan slide baru
                 slides[currentSlide].classList.remove('opacity-0', 'z-0');
                 slides[currentSlide].classList.add('opacity-100', 'z-10');
-                dots[currentSlide].classList.remove('bg-white/40', 'w-1.5');
-                dots[currentSlide].classList.add('bg-cyan-400', 'w-3');
+                dots[currentSlide].classList.remove('bg-white/50', 'w-2');
+                dots[currentSlide].classList.add('bg-cyan-400', 'w-5');
             }
 
-            // Jalankan interval
             setInterval(nextSlide, interval);
         });
     @endif
 
-
-    // --- SCRIPT LIVE TOAST (TIDAK BERUBAH) ---
+    // --- SCRIPT LIVE TOAST ---
     const realTrx = @json($publicTrx ?? []);
 
     const dummyNames = [
@@ -287,7 +286,7 @@
             else { colorClass = 'text-cyan-400'; borderColor = 'border-cyan-500'; }
 
             actionEl.className = colorClass;
-            containerBorder.className = `bg-[#1f2937]/95 backdrop-blur-xl border-l-4 ${borderColor} text-white px-4 py-3 rounded-r-xl shadow-2xl flex items-center gap-3 max-w-xs ring-1 ring-white/10`;
+            containerBorder.className = `bg-[#1f2937]/95 backdrop-blur-xl border-l-4 ${borderColor} text-white px-3 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 max-w-[240px] ring-1 ring-white/10`;
 
         } else {
             const randName = dummyNames[Math.floor(Math.random() * dummyNames.length)];
@@ -304,7 +303,7 @@
 
             actionEl.className = actionData.color;
             let borderColor = actionData.color.replace('text', 'border');
-            containerBorder.className = `bg-[#1f2937]/95 backdrop-blur-xl border-l-4 ${borderColor} text-white px-4 py-3 rounded-r-xl shadow-2xl flex items-center gap-3 max-w-xs ring-1 ring-white/10`;
+            containerBorder.className = `bg-[#1f2937]/95 backdrop-blur-xl border-l-4 ${borderColor} text-white px-3 py-2.5 rounded-xl shadow-2xl flex items-center gap-2.5 max-w-[240px] ring-1 ring-white/10`;
         }
 
         nameEl.innerText = data.name;
@@ -322,7 +321,7 @@
             initial.innerText = data.name.charAt(0);
             const colors = ['from-blue-600 to-cyan-600', 'from-purple-600 to-pink-600', 'from-green-600 to-emerald-600', 'from-orange-500 to-red-500'];
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            initial.className = `w-full h-full flex items-center justify-center font-bold text-white bg-gradient-to-br ${randomColor}`;
+            initial.className = `w-full h-full flex items-center justify-center font-bold text-white bg-gradient-to-br ${randomColor} text-xs`;
         }
 
         toast.classList.remove('translate-x-full');

@@ -207,7 +207,10 @@
 <script>
     // FUNGSI UNTUK MENGUBAH ANGKA JADI FORMAT TITIK (1.000.000)
     function formatRupiah(angka) {
-        let number_string = angka.toString().replace(/[^,\d]/g, ''),
+        // PERBAIKAN: Hapus desimal (.00) bawaan database jika ada
+        let angkaTanpaDesimal = angka.toString().split('.')[0]; 
+        
+        let number_string = angkaTanpaDesimal.replace(/[^,\d]/g, ''),
             split = number_string.split(','),
             sisa = split[0].length % 3,
             rupiah = split[0].substr(0, sisa),
@@ -227,14 +230,14 @@
         });
     });
 
-    // FUNGSI UNTUK MEMBERSIHKAN TITIK SEBELUM FORM DISUBMIT KE SERVER (PENTING!)
+    // FUNGSI UNTUK MEMBERSIHKAN TITIK SEBELUM FORM DISUBMIT KE SERVER
     function cleanRupiahBeforeSubmit(form) {
         let inputs = form.querySelectorAll('.input-rupiah');
         inputs.forEach(function(input) {
             // Hapus semua titik (1.000.000 jadi 1000000)
             input.value = input.value.replace(/\./g, '');
         });
-        return true; // Lanjutkan submit
+        return true; 
     }
 
     // FUNGSI BUKA MODAL
@@ -253,7 +256,7 @@
 
         document.getElementById('edit_name').value = product.name;
         
-        // Format nominal Rupiah dari database (misal: 100000 jadi 100.000) saat modal edit dibuka
+        // PERBAIKAN: Pastikan memanggil formatRupiah agar desimalnya terhapus & dikasih titik
         document.getElementById('edit_price').value = formatRupiah(product.price);
         document.getElementById('edit_income').value = formatRupiah(product.daily_income);
         

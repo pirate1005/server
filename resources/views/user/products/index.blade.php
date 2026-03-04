@@ -8,7 +8,7 @@
         <div class="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl -mr-16 -mt-16"></div>
         <div class="relative z-10">
             <span class="bg-purple-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider mb-2 inline-block">Marketplace</span>
-            <h2 class="text-3xl font-bold text-white mb-2">Pilih Server Investasi</h2>
+            <h2 class="text-3xl font-bold text-white mb-2">Pilih Server Yang Tersedia</h2>
             <p class="text-indigo-200 text-sm max-w-md">Sewa server cloud mining berkinerja tinggi. Dapatkan profit harian otomatis langsung ke dompet Anda.</p>
         </div>
         <i class="ph-duotone ph-shopping-cart text-8xl text-white/5 absolute bottom-4 right-4"></i>

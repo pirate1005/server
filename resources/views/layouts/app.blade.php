@@ -8,6 +8,22 @@
     <title>@yield('title', 'Digital Server Solutions')</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/img/icon1.png') }}">
 
+    <meta name="description" content="Platform penyewaan server digital otomatis dengan sistem profit harian.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:title" content="LMS Server AI - Digital Server Solutions">
+    <meta property="og:description" content="Sistem penyewaan server otomatis. Kerjakan misi video harian dan tarik keuntungan langsung ke dompet digital Anda.">
+    
+    <meta property="og:image" content="{{ asset('assets/img/logo3.jpeg') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url('/') }}">
+    <meta name="twitter:title" content="LMS Server AI - Digital Server Solutions">
+    <meta name="twitter:description" content="Platform penyewaan server digital otomatis dengan sistem profit harian.">
+    <meta name="twitter:image" content="{{ asset('assets/img/logo3.jpeg') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -127,7 +143,7 @@
         <div class="max-w-7xl mx-auto px-6 py-12">
             <div class="flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="text-center md:text-left">
-                    <h3 class="font-bold text-xl mb-2">LMS<span class="text-cyan-400">Server</span></h3>
+                    <h3 class="font-bold text-xl mb-2">LMS<span class="text-cyan-400">Server AI</span></h3>
                     <p class="text-gray-500 text-sm">Platform aset digital terpercaya dengan sistem otomatisasi.</p>
                 </div>
                 <p class="text-gray-600 text-sm">© 2026 PT LMS Digital Solutions. All rights reserved.</p>

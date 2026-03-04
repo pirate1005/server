@@ -96,8 +96,8 @@
                             <div class="flex justify-between mt-2">
                                 <p class="text-[10px] text-gray-500">*Min: Rp 137.000 (Sesuai harga server)</p>
                                 <div class="flex gap-2">
-                                    <button type="button" onclick="fillAmount(137000)" class="text-[10px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2 py-1 rounded transition">137rb</button>
-                                    <button type="button" onclick="fillAmount(500000)" class="text-[10px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2 py-1 rounded transition">500rb</button>
+                                    <button type="button" onclick="fillAmount('depo-amount', 137000)" class="text-[10px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2 py-1 rounded transition">137rb</button>
+                                    <button type="button" onclick="fillAmount('depo-amount', 500000)" class="text-[10px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2 py-1 rounded transition">500rb</button>
                                 </div>
                             </div>
                         </div>
@@ -164,6 +164,11 @@
                         <div class="flex justify-between items-center mt-3 px-1">
                             <span class="text-xs text-gray-500">Saldo Tersedia:</span>
                             <span class="text-sm font-bold text-white">Rp {{ number_format($user->wallet->balance) }}</span>
+                        </div>
+                        <div class="flex justify-end gap-2 mt-2">
+                            <button type="button" onclick="fillAmount('wd-amount', 50000)" class="text-[10px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2 py-1 rounded transition">50rb</button>
+                            <button type="button" onclick="fillAmount('wd-amount', 100000)" class="text-[10px] bg-gray-800 hover:bg-gray-700 text-gray-300 px-2 py-1 rounded transition">100rb</button>
+                            <button type="button" onclick="fillMaxWithdraw()" class="text-[10px] bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500 hover:text-white px-2 py-1 rounded transition border border-cyan-500/30 font-bold">MAX</button>
                         </div>
                     </div>
                     <button type="button" onclick="confirmWithdraw()" class="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-bold text-lg rounded-xl transition shadow-lg shadow-red-900/20 transform active:scale-[0.98]">
@@ -259,23 +264,21 @@
 
 @push('scripts')
 <script>
-    // ==========================================
-    // LOGIKA TAB SWITCHER BARU
-    // ==========================================
+    // Ambil total saldo user dari PHP ke Variabel JS
+    const userBalance = {{ $user->wallet->balance ?? 0 }};
+    const minSaldoSisa = 100000; // Minimal Saldo yang harus tersisa
+
     function switchTab(tab) {
         const btnDefault = "flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 text-gray-400 hover:text-white hover:bg-white/5 flex items-center justify-center gap-2";
         
-        // Hide Semua Tab
         document.getElementById('tab-deposit').classList.add('hidden');
         document.getElementById('tab-withdraw').classList.add('hidden');
         document.getElementById('tab-transfer').classList.add('hidden');
         
-        // Reset Semua Button
         document.getElementById('btn-deposit').className = btnDefault;
         document.getElementById('btn-withdraw').className = btnDefault;
         document.getElementById('btn-transfer').className = btnDefault;
 
-        // Tampilkan Tab yang Dipilih
         if (tab === 'deposit') {
             document.getElementById('tab-deposit').classList.remove('hidden');
             document.getElementById('btn-deposit').className = "flex-1 py-3 rounded-xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg flex items-center justify-center gap-2 transform scale-105";
@@ -298,9 +301,6 @@
         Toast.fire({ icon: 'success', title: 'Nomor Rekening disalin!' });
     }
 
-    // ==========================================
-    // LOGIKA AUTO FORMAT RUPIAH
-    // ==========================================
     function formatRupiah(angka) {
         let number_string = angka.toString().replace(/[^,\d]/g, ''),
             split = number_string.split(','),
@@ -321,8 +321,19 @@
         });
     });
 
-    function fillAmount(val) {
-        document.getElementById('depo-amount').value = formatRupiah(val);
+    // Helper isi otomatis input berdasarkan ID elemen
+    function fillAmount(elementId, val) {
+        document.getElementById(elementId).value = formatRupiah(val);
+    }
+
+    // Tombol MAX Withdraw (Sisa saldo minimal 100rb)
+    function fillMaxWithdraw() {
+        let maxTarik = userBalance - minSaldoSisa;
+        if(maxTarik > 0) {
+            fillAmount('wd-amount', maxTarik);
+        } else {
+            Swal.fire({ icon: 'error', title: 'Saldo Tidak Cukup', text: 'Saldo aktif Anda kurang dari batas minimum yang bisa ditarik.', background: '#1f2937', color: '#fff' });
+        }
     }
 
     function previewFile(input) {
@@ -365,7 +376,7 @@
     }
 
     // ==========================================
-    // WITHDRAW SUBMIT
+    // WITHDRAW SUBMIT (Dengan Validasi Sisa 100rb)
     // ==========================================
     function confirmWithdraw() {
         const inputElement = document.getElementById('wd-amount');
@@ -374,6 +385,18 @@
 
         if(!amount || amount < 50000) {
             Swal.fire({ icon: 'error', title: 'Nominal Salah', text: 'Minimal penarikan Rp 50.000', background: '#1f2937', color: '#fff' });
+            return;
+        }
+
+        // VALIDASI SISA SALDO 100.000
+        let sisaSaldo = userBalance - amount;
+        if (sisaSaldo < minSaldoSisa) {
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Transaksi Ditolak', 
+                text: `Saldo minimal yang harus tersisa di dompet adalah Rp 100.000. Saldo Anda saat ini: Rp ${formatRupiah(userBalance)}. Maksimal penarikan: Rp ${formatRupiah(userBalance - minSaldoSisa)}.`, 
+                background: '#1f2937', color: '#fff' 
+            });
             return;
         }
 
@@ -416,6 +439,7 @@
                         <span class="font-bold text-white">Estimasi Diterima</span>
                         <span class="text-green-400 font-bold text-lg">Rp ${formatRp(sisaSetelahPajak)}</span>
                     </div>
+                    <p class="text-[10px] text-gray-500 mt-2 text-center">*Sisa saldo dompet Anda setelah ini: Rp ${formatRp(sisaSaldo)}</p>
                 </div>
             `,
             icon: 'warning',
@@ -434,7 +458,7 @@
     }
 
     // ==========================================
-    // TRANSFER SUBMIT (BARU)
+    // TRANSFER SUBMIT (Dengan Validasi Sisa 100rb)
     // ==========================================
     function confirmTransfer() {
         const inputElement = document.getElementById('tf-amount');
@@ -451,6 +475,18 @@
             return;
         }
 
+        // VALIDASI SISA SALDO 100.000
+        let sisaSaldo = userBalance - amount;
+        if (sisaSaldo < minSaldoSisa) {
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Transaksi Ditolak', 
+                text: `Saldo minimal yang harus tersisa di dompet adalah Rp 100.000. Saldo Anda saat ini: Rp ${formatRupiah(userBalance)}. Maksimal transfer: Rp ${formatRupiah(userBalance - minSaldoSisa)}.`, 
+                background: '#1f2937', color: '#fff' 
+            });
+            return;
+        }
+
         Swal.fire({
             title: 'Konfirmasi Transfer',
             text: `Saldo Anda akan dipotong sebesar Rp ${formatRupiah(amount)} dan ditahan hingga disetujui Admin. Lanjutkan pengiriman ke ${email}?`,
@@ -463,7 +499,7 @@
             customClass: { popup: 'rounded-2xl', confirmButton: 'rounded-xl shadow-lg', cancelButton: 'rounded-xl' }
         }).then((result) => { 
             if (result.isConfirmed) {
-                inputElement.value = rawValue; // Hapus titik format sebelum disubmit ke backend
+                inputElement.value = rawValue;
                 document.getElementById('form-transfer').submit(); 
             }
         });

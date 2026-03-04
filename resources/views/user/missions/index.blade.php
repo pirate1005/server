@@ -35,7 +35,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-white text-sm">{{ $inv->product->name }}</h3>
-                            <p class="text-xs text-gray-500">Reward: <span class="text-green-400 font-bold">Rp {{ number_format($inv->daily_profit) }}</span></p>
+                            <p class="text-xs text-gray-500">Reward: <span class="text-green-400 font-bold">Rp {{ number_format($inv->product->daily_income, 0, ',', '.') }}</span></p>
                         </div>
                     </div>
                     

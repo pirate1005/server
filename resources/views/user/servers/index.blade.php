@@ -25,14 +25,15 @@
                 $totalDays = $startDate->diffInDays($endDate);
                 
                 // Hari berjalan (cegah minus atau lebih dari total)
-                // Kita bandingkan start date dengan waktu SEKARANG (WIB)
                 $daysRunning = max(0, min($totalDays, $startDate->diffInDays($now)));
                 
                 // Persentase
                 $progress = $totalDays > 0 ? ($daysRunning / $totalDays) * 100 : 0;
                 
-                // Hitung Total Cuan dari Server ini
-                $totalEarned = $inv->dailyClaims->where('status', 'success')->sum('amount');
+                // PERBAIKAN: Hitung Total Cuan Langsung dari Database
+                $totalEarned = \App\Models\DailyClaim::where('investment_id', $inv->id)
+                                                     ->where('status', 'success')
+                                                     ->sum('amount');
             @endphp
 
             <div class="relative bg-[#141625] border {{ $inv->status == 'active' ? 'border-cyan-500/30' : 'border-gray-800' }} rounded-2xl p-5 overflow-hidden transition hover:-translate-y-1">
@@ -69,11 +70,11 @@
                     <div class="grid grid-cols-2 gap-4 mb-4 bg-black/20 p-3 rounded-xl border border-gray-700/30">
                         <div>
                             <p class="text-[10px] text-gray-500 uppercase">Profit Harian</p>
-                            <p class="text-sm font-bold text-cyan-400">Rp {{ number_format($inv->product->daily_income) }}</p>
+                            <p class="text-sm font-bold text-cyan-400">Rp {{ number_format($inv->product->daily_income, 0, ',', '.') }}</p>
                         </div>
                         <div class="text-right">
                             <p class="text-[10px] text-gray-500 uppercase">Total Didapat</p>
-                            <p class="text-sm font-bold text-green-400">Rp {{ number_format($totalEarned) }}</p>
+                            <p class="text-sm font-bold text-green-400">Rp {{ number_format($totalEarned, 0, ',', '.') }}</p>
                         </div>
                     </div>
 
@@ -108,7 +109,7 @@
                     <i class="ph-fill ph-hard-drives text-3xl"></i>
                 </div>
                 <h3 class="text-white font-bold mb-2">Belum Ada Server</h3>
-                <p class="text-gray-400 text-sm mb-6 max-w-xs mx-auto">Anda belum menyewa server apapun. Mulai investasi sekarang untuk dapat profit.</p>
+                <p class="text-gray-400 text-sm mb-6 max-w-xs mx-auto">Anda belum menyewa server apapun. Mulai sewa server sekarang untuk dapat profit.</p>
                 <a href="{{ route('user.products.index') }}" class="px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl shadow-lg transition">
                     Lihat Daftar Server
                 </a>

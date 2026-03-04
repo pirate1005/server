@@ -12,11 +12,15 @@ class ServerController extends Controller
 {
     public function index()
     {
-        // Ambil semua investasi user, urutkan yang aktif paling atas
-        $investments = Investment::with(['product', 'dailyClaims'])
-                        ->where('user_id', Auth::id())
-                        ->orderByRaw("FIELD(status, 'active', 'pending', 'expired')")
-                        ->latest()
+        // Ambil semua investasi user, hubungkan (join) dengan tabel products
+        $investments = Investment::select('investments.*') // Wajib agar ID product tidak menimpa ID investment
+                        ->join('products', 'investments.product_id', '=', 'products.id')
+                        ->with(['product', 'dailyClaims'])
+                        ->where('investments.user_id', Auth::id())
+                        // 1. Urutkan berdasarkan status (Active paling atas, expired paling bawah)
+                        ->orderByRaw("FIELD(investments.status, 'active', 'pending', 'expired')")
+                        // 2. Urutkan berdasarkan HARGA SERVER dari termurah ke termahal
+                        ->orderBy('products.price', 'asc') 
                         ->get();
 
         return view('user.servers.index', compact('investments'));

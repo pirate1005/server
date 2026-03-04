@@ -8,7 +8,7 @@
         
         <div class="text-center mb-8">
             <h2 class="text-2xl font-bold text-white">Kartu Identitas Owner</h2>
-            <p class="text-gray-400 text-sm">Kartu keanggotaan resmi komunitas investasi server.</p>
+            <p class="text-gray-400 text-sm">Kartu keanggotaan resmi komunitas sewa server.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-10 font-sans">
@@ -75,7 +75,7 @@
                 <div class="relative z-10 flex flex-col h-full">
                     
                     <div class="w-full h-10 bg-gradient-to-r from-gray-800 to-gray-900 border-b border-gray-700 flex items-center px-6">
-                        <p class="text-[9px] text-gray-400 tracking-widest uppercase">www.investasi-server.com</p>
+                        <p class="text-[9px] text-gray-400 tracking-widest uppercase">www.lmsserverai.com</p>
                     </div>
 
                     <div class="px-6 py-6 flex-1 flex gap-6 items-center">
