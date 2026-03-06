@@ -15,7 +15,20 @@ class WalletController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $user->load('wallet');
+
+        // --- SOLUSI PERMANEN: Cek dan Buat Dompet Jika Belum Ada ---
+        if (!$user->wallet) {
+            Wallet::create([
+                'user_id' => $user->id,
+                'balance' => 0
+            ]);
+            
+            // Reload relasi wallet agar data terbarunya langsung terbaca
+            $user->load('wallet');
+        } else {
+            $user->load('wallet');
+        }
+        // -----------------------------------------------------------
 
         // Ambil riwayat transaksi
         $transactions = Transaction::where('user_id', $user->id)
@@ -86,41 +99,42 @@ class WalletController extends Controller
         return back()->with('success', 'Permintaan Withdraw berhasil! Dana akan dikirim ke rekening Anda.');
     }
 
+    // PROSES TRANSFER
     public function transfer(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email|exists:users,email',
-        'amount' => 'required|numeric|min:10000',
-    ]);
-
-    $sender = Auth::user();
-    $receiver = User::where('email', $request->email)->first();
-
-    // Validasi tidak boleh transfer ke diri sendiri
-    if ($sender->id === $receiver->id) {
-        return back()->with('error', 'Tidak bisa melakukan transfer ke akun sendiri.');
-    }
-
-    // Validasi saldo cukup
-    if ($sender->wallet->balance < $request->amount) {
-        return back()->with('error', 'Saldo Anda tidak mencukupi untuk transfer ini.');
-    }
-
-    DB::transaction(function () use ($sender, $receiver, $request) {
-        // 1. Potong saldo pengirim sekarang (Hold dana)
-        $sender->wallet->decrement('balance', $request->amount);
-
-        // 2. Buat transaksi berstatus PENDING
-        Transaction::create([
-            'user_id' => $sender->id,
-            'receiver_id' => $receiver->id,
-            'type' => 'transfer',
-            'amount' => $request->amount,
-            'status' => 'pending',
-            'description' => 'Transfer ke ' . $receiver->email,
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'amount' => 'required|numeric|min:10000',
         ]);
-    });
 
-    return back()->with('success', 'Permintaan transfer berhasil. Menunggu persetujuan Admin.');
-}
+        $sender = Auth::user();
+        $receiver = User::where('email', $request->email)->first();
+
+        // Validasi tidak boleh transfer ke diri sendiri
+        if ($sender->id === $receiver->id) {
+            return back()->with('error', 'Tidak bisa melakukan transfer ke akun sendiri.');
+        }
+
+        // Validasi saldo cukup
+        if ($sender->wallet->balance < $request->amount) {
+            return back()->with('error', 'Saldo Anda tidak mencukupi untuk transfer ini.');
+        }
+
+        DB::transaction(function () use ($sender, $receiver, $request) {
+            // 1. Potong saldo pengirim sekarang (Hold dana)
+            $sender->wallet->decrement('balance', $request->amount);
+
+            // 2. Buat transaksi berstatus PENDING
+            Transaction::create([
+                'user_id' => $sender->id,
+                'receiver_id' => $receiver->id,
+                'type' => 'transfer',
+                'amount' => $request->amount,
+                'status' => 'pending',
+                'description' => 'Transfer ke ' . $receiver->email,
+            ]);
+        });
+
+        return back()->with('success', 'Permintaan transfer berhasil. Menunggu persetujuan Admin.');
+    }
 }

@@ -121,6 +121,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/missions/{investment}/claim', [UserMissionController::class, 'claim'])->name('user.missions.claim');
 
     Route::post('/wallet/transfer', [\App\Http\Controllers\User\WalletController::class, 'transfer'])->name('user.wallet.transfer');
+
+    Route::get('/loan', [\App\Http\Controllers\User\LoanController::class, 'index'])->name('user.loan');
+Route::post('/loan/submit', [\App\Http\Controllers\User\LoanController::class, 'submit'])->name('user.loan.submit');
 });
 
 require __DIR__.'/auth.php';

@@ -132,7 +132,7 @@
             
             <div class="text-center mb-6">
                 <p class="text-gray-400 text-sm mb-1">Harga Upgrade</p>
-                <h3 class="text-3xl font-bold text-white">Rp 500.000</h3>
+                <h3 class="text-3xl font-bold text-white">Rp 5.675.000</h3>
                 <p class="text-xs text-yellow-500 mt-1">Sekali bayar, aktif selamanya</p>
             </div>
 

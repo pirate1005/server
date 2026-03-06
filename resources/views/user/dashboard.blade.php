@@ -110,31 +110,51 @@
     <h3 class="text-white font-bold mb-4 flex items-center gap-2">
         <span class="w-1 h-5 bg-cyan-500 rounded-full"></span> Layanan Utama
     </h3>
-    <div class="grid grid-cols-4 gap-4 mb-8">
+    
+    <div class="grid grid-cols-3 md:grid-cols-6 gap-3 mb-8">
+        
         <a href="{{ route('user.products.index') }}" class="flex flex-col items-center gap-2 group">
             <div class="w-14 h-14 bg-gray-800 group-hover:bg-cyan-500/20 rounded-2xl flex items-center justify-center transition border border-gray-700 group-hover:border-cyan-500/50">
                 <i class="ph-fill ph-shopping-cart text-2xl text-cyan-400"></i>
             </div>
             <span class="text-xs text-gray-400 text-center leading-tight group-hover:text-white transition">Sewa Server</span>
         </a>
+        
         <a href="{{ route('user.upgrade') }}" class="flex flex-col items-center gap-2 group">
             <div class="w-14 h-14 bg-gray-800 group-hover:bg-yellow-500/20 rounded-2xl flex items-center justify-center transition border border-gray-700 group-hover:border-yellow-500/50">
                 <i class="ph-fill ph-medal text-2xl text-yellow-400"></i>
             </div>
             <span class="text-xs text-gray-400 text-center leading-tight group-hover:text-white transition">Upgrade Owner</span>
         </a>
+        
         <a href="{{ route('user.referrals') }}" class="flex flex-col items-center gap-2 group">
             <div class="w-14 h-14 bg-gray-800 group-hover:bg-green-500/20 rounded-2xl flex items-center justify-center transition border border-gray-700 group-hover:border-green-500/50">
                 <i class="ph-fill ph-users-three text-2xl text-green-400"></i>
             </div>
             <span class="text-xs text-gray-400 text-center leading-tight group-hover:text-white transition">Undang Teman</span>
         </a>
+        
+        <button onclick="showEndorseFlow()" class="flex flex-col items-center gap-2 group outline-none">
+            <div class="w-14 h-14 bg-gray-800 group-hover:bg-pink-500/20 rounded-2xl flex items-center justify-center transition border border-gray-700 group-hover:border-pink-500/50">
+                <i class="ph-fill ph-megaphone text-2xl text-pink-400"></i>
+            </div>
+            <span class="text-xs text-gray-400 text-center leading-tight group-hover:text-white transition">Endorse Iklan</span>
+        </button>
+
+        <a href="{{ route('user.loan') }}" class="flex flex-col items-center gap-2 group outline-none">
+            <div class="w-14 h-14 bg-gray-800 group-hover:bg-orange-500/20 rounded-2xl flex items-center justify-center transition border border-gray-700 group-hover:border-orange-500/50">
+                <i class="ph-fill ph-hand-coins text-2xl text-orange-400"></i>
+            </div>
+            <span class="text-xs text-gray-400 text-center leading-tight group-hover:text-white transition">Pinjaman</span>
+        </a>
+
         <a href="{{ route('user.support')}}" class="flex flex-col items-center gap-2 group">
             <div class="w-14 h-14 bg-gray-800 group-hover:bg-purple-500/20 rounded-2xl flex items-center justify-center transition border border-gray-700 group-hover:border-purple-500/50">
                 <i class="ph-fill ph-headset text-2xl text-purple-400"></i>
             </div>
             <span class="text-xs text-gray-400 text-center leading-tight group-hover:text-white transition">Bantuan CS</span>
         </a>
+        
     </div>
 
     <div class="flex justify-between items-center mb-4">
@@ -196,6 +216,65 @@
 
 @push('scripts')
 <script>
+
+    // --- FUNGSI ALUR ENDORSE IKLAN ---
+    function showEndorseFlow() {
+        Swal.fire({
+            title: 'Alur Pemasangan Iklan',
+            html: `
+                <div class="text-left text-sm text-gray-300 space-y-3 mt-4 bg-black/20 p-4 rounded-xl border border-gray-700">
+                    <p class="flex gap-2">
+                        <span class="font-bold text-pink-400">1.</span> 
+                        <span>Siapkan banner/poster promosi Anda dan link tujuan (opsional).</span>
+                    </p>
+                    <p class="flex gap-2">
+                        <span class="font-bold text-pink-400">2.</span> 
+                        <span>Hubungi CS via WhatsApp untuk mendiskusikan harga dan durasi tayang iklan.</span>
+                    </p>
+                    <p class="flex gap-2">
+                        <span class="font-bold text-pink-400">3.</span> 
+                        <span>Lakukan pembayaran setelah mencapai kesepakatan.</span>
+                    </p>
+                    <p class="flex gap-2">
+                        <span class="font-bold text-pink-400">4.</span> 
+                        <span>Iklan Anda akan langsung tayang secara bergantian di Dashboard seluruh member LMS Server AI.</span>
+                    </p>
+                </div>
+            `,
+            icon: 'info',
+            background: '#1f2937', 
+            color: '#fff',
+            showCancelButton: true,
+            confirmButtonText: 'Hubungi CS Sekarang',
+            cancelButtonText: 'Tutup',
+            confirmButtonColor: '#10b981', // Warna hijau WA
+            cancelButtonColor: '#4b5563',
+            customClass: {
+                popup: 'rounded-3xl',
+                confirmButton: 'rounded-xl font-bold shadow-lg',
+                cancelButton: 'rounded-xl font-bold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika user setuju, buka tab baru ke WhatsApp Admin
+                window.open("https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20sudah%20membaca%20syarat%20dan%20tertarik%20untuk%20memasang%20Endorse/Iklan%20di%20LMS%20Server.", "_blank");
+            }
+        });
+    }
+
+    // Fungsi Alert untuk Menu Pinjaman
+    function showLoanAlert() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Fitur Terkunci',
+            text: 'Maaf, akun Anda saat ini belum memenuhi syarat untuk mengajukan pinjaman. Tingkatkan terus transaksi Anda!',
+            background: '#1f2937', 
+            color: '#fff',
+            confirmButtonColor: '#f97316',
+            customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-xl font-bold' }
+        });
+    }
+
     // --- SCRIPT BANNER SLIDESHOW ---
     @if(isset($banners) && $banners->count() > 1)
         document.addEventListener('DOMContentLoaded', function() {
@@ -237,14 +316,25 @@
     ];
 
     const dummyActions = [
-        { type: 'Deposit Sukses', color: 'text-green-400', range: [100000, 2000000], weight: 4 },
-        { type: 'Withdraw Cair', color: 'text-orange-400', range: [50000, 500000], weight: 3 },
-        { type: 'Sewa Server Mikro', color: 'text-cyan-400', range: [137000, 137000], weight: 2 },
-        { type: 'Sewa Server Titanium', color: 'text-purple-400', range: [550000, 550000], weight: 1 },
-        { type: 'Sewa Server Gold', color: 'text-yellow-400', range: [350000, 350000], weight: 1 },
-        { type: 'Klaim Misi Harian', color: 'text-blue-400', range: [2500, 15000], weight: 5 },
-        { type: 'Bonus Referral', color: 'text-pink-400', range: [10000, 50000], weight: 2 },
-        { type: 'Upgrade Owner', color: 'text-yellow-500', range: [500000, 500000], weight: 1 }
+        { type: 'Deposit Sukses', color: 'text-green-400', range: [137000, 5675000], weight: 4 }, 
+        { type: 'Withdraw Cair', color: 'text-orange-400', range: [50000, 2000000], weight: 3 }, 
+        
+        { type: 'Sewa WebSphere', color: 'text-cyan-400', range: [137000, 137000], weight: 2 },
+        { type: 'Sewa HTTP Server', color: 'text-cyan-400', range: [365000, 365000], weight: 2 },
+        { type: 'Sewa IBM Domino', color: 'text-cyan-400', range: [762000, 762000], weight: 2 },
+        { type: 'Sewa Server Owner', color: 'text-yellow-400', range: [5675000, 5675000], weight: 1 },
+        { type: 'Sewa Owner Cloud', color: 'text-yellow-400', range: [12383000, 12383000], weight: 1 },
+        { type: 'Sewa PVS IBM', color: 'text-purple-400', range: [18682000, 18682000], weight: 1 },
+        { type: 'Sewa Dell R740', color: 'text-purple-400', range: [29322000, 29322000], weight: 1 },
+
+        { type: 'Klaim Misi Harian', color: 'text-blue-400', range: [6000, 6000], weight: 3 },
+        { type: 'Klaim Misi Harian', color: 'text-blue-400', range: [16800, 16800], weight: 3 },
+        { type: 'Klaim Misi Harian', color: 'text-blue-400', range: [37000, 37000], weight: 3 },
+        { type: 'Klaim Misi VIP', color: 'text-yellow-400', range: [241188, 241188], weight: 1 },
+        { type: 'Klaim Misi VIP', color: 'text-yellow-400', range: [793900, 793900], weight: 1 },
+
+        { type: 'Bonus Referral', color: 'text-pink-400', range: [15000, 100000], weight: 2 },
+        { type: 'Upgrade Owner', color: 'text-yellow-500', range: [5000000, 15000000], weight: 1 }
     ];
 
     function formatRupiah(amount) {
@@ -282,7 +372,7 @@
 
             if(data.action.includes('Deposit')) { colorClass = 'text-green-400'; borderColor = 'border-green-500'; }
             else if(data.action.includes('Withdraw')) { colorClass = 'text-orange-400'; borderColor = 'border-orange-500'; }
-            else if(data.action.includes('Profit')) { colorClass = 'text-blue-400'; borderColor = 'border-blue-500'; }
+            else if(data.action.includes('Profit') || data.action.includes('Misi')) { colorClass = 'text-blue-400'; borderColor = 'border-blue-500'; }
             else { colorClass = 'text-cyan-400'; borderColor = 'border-cyan-500'; }
 
             actionEl.className = colorClass;

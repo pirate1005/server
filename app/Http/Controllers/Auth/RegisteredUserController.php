@@ -60,6 +60,6 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // Setelah daftar, langsung ke Home
-        return redirect(route('home'));
+        return redirect()->route('dashboard');
     }
 }

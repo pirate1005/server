@@ -62,8 +62,9 @@
                 <i class="ph-bold ph-caret-down text-gray-500 transition-transform group-open:rotate-180"></i>
             </summary>
             <div class="p-4 text-sm text-gray-400 border-t border-gray-700 leading-relaxed">
-                Penarikan dana diproses setiap hari pada jam kerja <strong>09:00 - 21:00 WIB</strong>. Dana akan masuk ke rekening Anda maksimal 1x24 jam.
-            </div>
+    <i class="ph-fill ph-info text-orange-400 mr-1"></i> 
+    Harap diperhatikan bahwa pencairan dana pinjaman memiliki masa tunggu operasional: <strong>40 hari kerja</strong> khusus untuk akun <strong>Owner</strong>, dan <strong>21 hari kerja</strong> bagi <strong>Member Biasa</strong>.
+</div>
         </details>
 
         <details class="group bg-[#141625] border border-gray-800 rounded-xl overflow-hidden">
@@ -72,7 +73,7 @@
                 <i class="ph-bold ph-caret-down text-gray-500 transition-transform group-open:rotate-180"></i>
             </summary>
             <div class="p-4 text-sm text-gray-400 border-t border-gray-700 leading-relaxed">
-                Anda otomatis menjadi Owner VIP jika menyewa <strong>Server Khusus Owner</strong> atau memiliki total aset sewa minimal Rp 5.000.000.
+                Anda otomatis menjadi Owner VIP jika menyewa <strong>Server Khusus Owner</strong> atau memiliki total aset sewa minimal Rp 5.675.000.
             </div>
         </details>
 

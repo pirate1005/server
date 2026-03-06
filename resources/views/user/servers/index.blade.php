@@ -19,18 +19,21 @@
             @php
                 // Pakai Timezone Asia/Jakarta
                 $startDate = \Carbon\Carbon::parse($inv->start_date)->timezone('Asia/Jakarta');
-                $endDate = \Carbon\Carbon::parse($inv->end_date)->timezone('Asia/Jakarta');
                 $now = now()->timezone('Asia/Jakarta');
 
-                $totalDays = $startDate->diffInDays($endDate);
+                // 1. PERBAIKAN WAKTU SEWA: Ambil paksa dari data Produk terbaru (bukan data sewa lama)
+                $totalDays = $inv->product->contract_days;
                 
-                // Hari berjalan (cegah minus atau lebih dari total)
+                // 2. Sesuaikan kembali tanggal berakhir yang benar (Start Date + Total Hari)
+                $endDate = $startDate->copy()->addDays($totalDays);
+                
+                // 3. Hari berjalan kalender (Sama persis seperti kode asli Anda)
                 $daysRunning = max(0, min($totalDays, $startDate->diffInDays($now)));
                 
                 // Persentase
                 $progress = $totalDays > 0 ? ($daysRunning / $totalDays) * 100 : 0;
                 
-                // PERBAIKAN: Hitung Total Cuan Langsung dari Database
+                // 4. FIX TOTAL DIDAPAT (CUAN): Hitung langsung dari database agar tidak 0
                 $totalEarned = \App\Models\DailyClaim::where('investment_id', $inv->id)
                                                      ->where('status', 'success')
                                                      ->sum('amount');
