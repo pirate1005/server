@@ -13,9 +13,9 @@ class TransactionController extends Controller
     // MENAMPILKAN LIST TRANSAKSI
     public function index()
     {
-        // Ambil transaksi deposit & withdraw saja (profit harian ga perlu diapprove)
+        // PERBAIKAN: Tambahkan 'transfer' agar tampil di tabel Admin
         $transactions = Transaction::with('user')
-            ->whereIn('type', ['deposit', 'withdraw'])
+            ->whereIn('type', ['deposit', 'withdraw', 'transfer'])
             ->latest()
             ->paginate(10);
 
@@ -33,23 +33,25 @@ class TransactionController extends Controller
             // Jika ini adalah transfer antar user
             if ($transaction->type === 'transfer') {
                 // Tambahkan saldo ke penerima
-                $receiverWallet = \App\Models\Wallet::where('user_id', $transaction->receiver_id)->first();
+                $receiverWallet = Wallet::where('user_id', $transaction->receiver_id)->first();
                 $receiverWallet->increment('balance', $transaction->amount);
 
                 // Buat riwayat sukses untuk penerima (agar muncul di dashboard penerima)
                 Transaction::create([
                     'user_id' => $transaction->receiver_id,
-                    'type' => 'transfer_received',
+                    'type' => 'transfer_received', // Tipe khusus untuk penerima
                     'amount' => $transaction->amount,
                     'status' => 'success',
                     'description' => 'Menerima transfer dari ' . $transaction->user->email,
                 ]);
             }
 
-            // Jika deposit (logika lama Anda)
+            // Jika deposit
             elseif ($transaction->type === 'deposit') {
                 $transaction->user->wallet->increment('balance', $transaction->amount);
             }
+
+            // (Note: Withdraw tidak ada increment karena saldo sudah dipotong saat user request)
 
             // Ubah status transaksi utama jadi sukses
             $transaction->update(['status' => 'success']);
@@ -71,14 +73,14 @@ class TransactionController extends Controller
                 $transaction->user->wallet->increment('balance', $transaction->amount);
             }
 
-            // Jika withdraw ditolak (uang dikembalikan ke user)
+            // Jika withdraw ditolak, kembalikan uangnya ke user
             elseif ($transaction->type === 'withdraw') {
                 $transaction->user->wallet->increment('balance', $transaction->amount);
             }
 
-            $transaction->update(['status' => 'failed']); // atau 'rejected'
+            $transaction->update(['status' => 'failed']); 
         });
 
-        return back()->with('success', 'Transaksi berhasil ditolak dan saldo telah dikembalikan (jika ada).');
+        return back()->with('success', 'Transaksi berhasil ditolak dan saldo telah dikembalikan ke user (jika ada pemotongan di awal).');
     }
 }
